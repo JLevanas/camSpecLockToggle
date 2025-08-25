@@ -1,0 +1,28 @@
+speccameras = cmds.ls('"Your camera name here"*RN') # Setup to use references
+
+    for element in speccameras:
+
+        lockcheck = cmds.getAttr(element + '.locked')
+        filepath = cmds.referenceQuery(element, filename=True)
+        ns = cmds.referenceQuery(element, namespace=True)
+        master_node = ns + ':master'
+
+        if lockcheck == False:
+
+            cmds.setAttr(master_node + '.useOutlinerColor', True)
+            cmds.setAttr(master_node + '.outlinerColor', 1, 0, 0)
+            cmds.file(filepath, force=True, unloadReference=True)
+            cmds.setAttr(element + '.locked', True)
+            cmds.file(filepath, loadReference=True)
+
+            print
+            '"{}" is now ==LOCKED=AND=RED=='.format(element),
+
+        else:
+            cmds.file(filepath, force=True, unloadReference=True)
+            cmds.setAttr(element + '.locked', False)
+            cmds.file(filepath, loadReference=True)
+            cmds.setAttr(master_node + '.useOutlinerColor', False)
+
+            print
+            '"{}" is now ==UNLOCKED=DEFCOLOR=YAY=='.format(element),
